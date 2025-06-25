@@ -4,8 +4,7 @@ import time
 
 st.set_page_config(page_title="맞춤 메뉴 추천 앱 + 룰렛", page_icon="🎡")
 
-st.title("🎡 뭐 먹을지 고민이 될때 메뉴 추천 앱
-돌려돌려 돌림판~")
+st.title("🎡 뭐 먹을지 고민이 된다면 메뉴 추천 받아보삼!")
 st.write("계절, 날씨, 기분에 맞는 메뉴를 추천하고, 랜덤 추천은 룰렛처럼 돌려 보여드려요!")
 
 # 옵션들
