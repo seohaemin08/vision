@@ -1,43 +1,32 @@
 import streamlit as st
-import requests
-from bs4 import BeautifulSoup
 
-st.set_page_config(page_title="맞춤법 검사기", page_icon="📝")
-st.title("📝 한국어 맞춤법 검사기")
+st.set_page_config(page_title="할 일 리스트", page_icon="✅")
 
-text_input = st.text_area(
-    "검사할 문장을 입력해 주세요:",
-    placeholder="예: 안녕하새요 저는 오늘 학교에 갔읍니다.",
-    height=200,
-)
+st.title("✅ 할 일 리스트 앱")
 
-def check_spell(text: str) -> str:
-    """부산대 맞춤법 검사기를 호출하여 교정된 텍스트 반환"""
-    url = "https://speller.cs.pusan.ac.kr/results"
-    data = {"text1": text}
-    response = requests.post(url, data=data)
-    soup = BeautifulSoup(response.text, "html.parser")
+# 세션 상태 초기화
+if "todos" not in st.session_state:
+    st.session_state.todos = []
 
-    # 교정된 텍스트 가져오기
-    corrected_text_elem = soup.select_one(".replace_text")
-    if corrected_text_elem:
-        return corrected_text_elem.get_text(strip=True)
-    return "교정된 결과를 찾을 수 없습니다."
+# 새 할 일 추가
+new_task = st.text_input("할 일 추가하기:")
+if st.button("추가"):
+    if new_task.strip():  # 공백이 아닌 경우만 추가
+        st.session_state.todos.append(new_task.strip())
 
-if st.button("검사하기"):
-    if not text_input.strip():
-        st.warning("문장을 입력해 주세요!")
-    else:
-        with st.spinner("검사 중..."):
-            try:
-                corrected_text = check_spell(text_input)
-                st.success("✅ 검사 완료!")
-                st.subheader("교정된 문장")
-                st.write(f"> {corrected_text}")
-            except Exception as e:
-                st.error(f"맞춤법 검사 중 오류가 발생했습니다: {e}")
+st.markdown("---")
 
-st.markdown(
-    "---\n"
-    "💡 **참고:** 교정된 결과를 꼭 다시 한 번 확인해 주세요. (부산대 검사기 기반)"
-)
+# 현재 할 일 리스트 표시
+st.subheader("📋 현재 할 일")
+if len(st.session_state.todos) == 0:
+    st.info("할 일이 없습니다. 새 할 일을 추가해보세요!")
+else:
+    for i, task in enumerate(st.session_state.todos):
+        cols = st.columns([5, 1])
+        cols[0].write(f"{i+1}. {task}")
+        if cols[1].button("삭제", key=f"delete_{i}"):
+            del st.session_state.todos[i]
+            st.experimental_rerun()
+
+st.markdown("---")
+st.caption("💡 페이지를 새로 고치면 리스트가 초기화됩니다. CSV 저장 등 확장 가능!")
