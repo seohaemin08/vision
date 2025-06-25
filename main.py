@@ -1,71 +1,48 @@
 import streamlit as st
-import random
 
-st.set_page_config(page_title="MBTI + 지역별 맛집 추천", page_icon="🍽️")
-
-st.title("🍽️ MBTI와 지역에 따른 맛집 추천")
-
-mbti_types = [
-    "ISTJ", "ISFJ", "INFJ", "INTJ",
-    "ISTP", "ISFP", "INFP", "INTP",
-    "ESTP", "ESFP", "ENFP", "ENTP",
-    "ESTJ", "ESFJ", "ENFJ", "ENTJ"
-]
-
-regions = ["서울", "부산"]
-
-restaurant_data = {
-    "서울": {
-        "ISTJ": [
-            {
-                "name": "전통 한식집 서울점",
-                "image": "https://cdn.pixabay.com/photo/2017/12/09/08/18/korean-food-3004441_1280.jpg"
-            },
-            {
-                "name": "가성비 백반집",
-                "image": "https://cdn.pixabay.com/photo/2018/10/29/15/06/korean-food-3784015_1280.jpg"
-            },
-        ],
-        "ENFP": [
-            {
-                "name": "인스타 핫플 카페",
-                "image": "https://cdn.pixabay.com/photo/2017/08/06/13/11/coffee-2595553_1280.jpg"
-            },
-            {
-                "name": "푸드트럭 서울",
-                "image": "https://cdn.pixabay.com/photo/2017/06/16/11/40/street-food-2400729_1280.jpg"
-            },
-        ],
+# 전라도 광주 MBTI별 맛집 데이터
+mbti_data = {
+    "INFP": {
+        "restaurant": "광주 무등산 떡갈비",
+        "feature": "부드럽고 달콤한 수제 떡갈비, 전통적인 맛",
+        "rating": 4.8,
+        "address": "광주 동구 무등로 123",
+        "map_url": "https://map.kakao.com/?q=%EA%B4%91%EC%A3%BC+%EB%AC%B4%EB%93%B1%EC%82%B0+%EB%96%A1%EA%B0%88%EB%B9%84",
     },
-    "부산": {
-        "ISTJ": [
-            {
-                "name": "부산 전통 한식집",
-                "image": "https://cdn.pixabay.com/photo/2016/03/05/19/02/korean-food-1239429_1280.jpg"
-            }
-        ],
-        "ENFP": [
-            {
-                "name": "부산 해변가 카페",
-                "image": "https://cdn.pixabay.com/photo/2016/11/29/03/52/coffee-1869716_1280.jpg"
-            }
-        ],
+    "ESTJ": {
+        "restaurant": "광주 송정떡갈비",
+        "feature": "넉넉하고 푸짐한 떡갈비 정식, 현지인 추천 맛집",
+        "rating": 4.6,
+        "address": "광주 북구 설죽로 200",
+        "map_url": "https://map.kakao.com/?q=%EA%B4%91%EC%A3%BC+%EC%86%A1%EC%A0%95%EB%96%A1%EA%B0%88%EB%B9%84",
+    },
+    "ENFP": {
+        "restaurant": "광주 충장로 김치찌개",
+        "feature": "매콤하고 깊은 맛의 김치찌개, 활기찬 분위기",
+        "rating": 4.5,
+        "address": "광주 동구 충장로 45",
+        "map_url": "https://map.kakao.com/?q=%EA%B4%91%EC%A3%BC+%EC%B6%A9%EC%9E%A5%EB%A1%9C+%EA%B9%80%EC%B9%98%EC%B0%8C%EA%B0%9C",
+    },
+    "ISTJ": {
+        "restaurant": "광주 송정 떡집",
+        "feature": "전통 손맛 가득한 떡, 깔끔한 서비스",
+        "rating": 4.4,
+        "address": "광주 북구 송정로 77",
+        "map_url": "https://map.kakao.com/?q=%EA%B4%91%EC%A3%BC+%EC%86%A1%EC%A0%95+%EB%96%A1%EC%A7%91",
     },
 }
 
-selected_mbti = st.selectbox("당신의 MBTI를 선택하세요:", mbti_types)
-selected_region = st.selectbox("지역을 선택하세요:", regions)
+st.title("광주 MBTI별 맛집 추천 앱")
 
-if st.button("맛집 추천받기"):
-    region_data = restaurant_data.get(selected_region, {})
-    mbti_rests = region_data.get(selected_mbti, [])
+mbti_input = st.text_input("MBTI를 입력하세요 (예: INFP)").upper().strip()
 
-    if not mbti_rests:
-        st.warning("해당 지역과 MBTI에 맞는 맛집 정보가 없습니다.")
+if mbti_input:
+    if mbti_input in mbti_data:
+        info = mbti_data[mbti_input]
+        st.subheader(f"추천 맛집: {info['restaurant']}")
+        st.write(f"**특징:** {info['feature']}")
+        st.write(f"**평점:** {info['rating']} ⭐")
+        st.write(f"**주소:** {info['address']}")
+        st.markdown(f"[지도에서 위치 보기]({info['map_url']})")
     else:
-        rest = random.choice(mbti_rests)
-        st.markdown(f"### 🍽️ {rest['name']}")
-        st.image(rest["image"], use_column_width=True)
-
-st.markdown("---")
-st.caption("💡 이미지와 맛집 정보는 예시이며 Pixabay 무료 이미지를 활용했습니다.")
+        st.error("해당 MBTI 맛집 정보가 없습니다. 정확한 MBTI를 입력해주세요.")
