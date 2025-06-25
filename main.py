@@ -5,7 +5,6 @@ st.set_page_config(page_title="MBTI + 지역별 맛집 추천", page_icon="🍽�
 
 st.title("🍽️ MBTI와 지역에 따른 맛집 추천")
 
-# MBTI 유형
 mbti_types = [
     "ISTJ", "ISFJ", "INFJ", "INTJ",
     "ISTP", "ISFP", "INFP", "INTP",
@@ -13,11 +12,8 @@ mbti_types = [
     "ESTJ", "ESFJ", "ENFJ", "ENTJ"
 ]
 
-# 지역 리스트 (예시)
 regions = ["서울", "부산"]
 
-# MBTI별 지역별 맛집 데이터 (가게 이름, 음식 사진 URL)
-# 실제 프로젝트면 DB나 API로 관리하세요
 restaurant_data = {
     "서울": {
         "ISTJ": [
@@ -40,7 +36,6 @@ restaurant_data = {
                 "image": "https://cdn.pixabay.com/photo/2017/06/16/11/40/street-food-2400729_1280.jpg"
             },
         ],
-        # ...다른 MBTI 생략
     },
     "부산": {
         "ISTJ": [
@@ -55,11 +50,9 @@ restaurant_data = {
                 "image": "https://cdn.pixabay.com/photo/2016/11/29/03/52/coffee-1869716_1280.jpg"
             }
         ],
-        # ...다른 MBTI 생략
     },
 }
 
-# 사용자 입력
 selected_mbti = st.selectbox("당신의 MBTI를 선택하세요:", mbti_types)
 selected_region = st.selectbox("지역을 선택하세요:", regions)
 
@@ -68,3 +61,11 @@ if st.button("맛집 추천받기"):
     mbti_rests = region_data.get(selected_mbti, [])
 
     if not mbti_rests:
+        st.warning("해당 지역과 MBTI에 맞는 맛집 정보가 없습니다.")
+    else:
+        rest = random.choice(mbti_rests)
+        st.markdown(f"### 🍽️ {rest['name']}")
+        st.image(rest["image"], use_column_width=True)
+
+st.markdown("---")
+st.caption("💡 이미지와 맛집 정보는 예시이며 Pixabay 무료 이미지를 활용했습니다.")
