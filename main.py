@@ -1,12 +1,11 @@
 import streamlit as st
 import random
 
-st.set_page_config(page_title="MBTI 맛집 추천기", page_icon="🍽️")
+st.set_page_config(page_title="MBTI + 지역별 맛집 추천", page_icon="🍽️")
 
-st.title("🍽️ MBTI별 맛집 추천 앱")
-st.write("내 MBTI에 딱 맞는 맛집 스타일을 추천받아 보세요!")
+st.title("🍽️ MBTI와 지역에 따른 맛집 추천")
 
-# MBTI 유형 리스트
+# MBTI 유형
 mbti_types = [
     "ISTJ", "ISFJ", "INFJ", "INTJ",
     "ISTP", "ISFP", "INFP", "INTP",
@@ -14,36 +13,58 @@ mbti_types = [
     "ESTJ", "ESFJ", "ENFJ", "ENTJ"
 ]
 
-# MBTI별 맛집 스타일 사전
-mbti_restaurant = {
-    "ISTJ": ["전통 한식집", "가성비 좋은 백반집"],
-    "ISFJ": ["따뜻한 분위기의 카페", "가족적인 분식집"],
-    "INFJ": ["아늑한 북카페", "채식 전문 레스토랑"],
-    "INTJ": ["미슐랭 레스토랑", "컨셉 있는 이색 카페"],
-    "ISTP": ["바비큐 전문점", "아웃도어 분위기 펍"],
-    "ISFP": ["감성 가득한 브런치 카페", "홈메이드 베이커리"],
-    "INFP": ["이색 디저트 카페", "조용한 와인바"],
-    "INTP": ["퓨전 레스토랑", "코워킹 스페이스 카페"],
-    "ESTP": ["트렌디한 바 & 클럽", "스포츠 펍"],
-    "ESFP": ["분위기 좋은 펍", "야외 테라스 카페"],
-    "ENFP": ["인스타 핫플 카페", "푸드트럭 & 스트리트 푸드"],
-    "ENTP": ["창의적인 퓨전 음식점", "테마 레스토랑"],
-    "ESTJ": ["회식하기 좋은 고깃집", "가성비 술집"],
-    "ESFJ": ["가족 모임 가능한 한식집", "따뜻한 카페"],
-    "ENFJ": ["모임하기 좋은 레스토랑", "분위기 좋은 와인바"],
-    "ENTJ": ["고급 스테이크하우스", "파인 다이닝 레스토랑"],
+# 지역 리스트 (예시)
+regions = ["서울", "부산"]
+
+# MBTI별 지역별 맛집 데이터 (가게 이름, 음식 사진 URL)
+# 실제 프로젝트면 DB나 API로 관리하세요
+restaurant_data = {
+    "서울": {
+        "ISTJ": [
+            {
+                "name": "전통 한식집 서울점",
+                "image": "https://cdn.pixabay.com/photo/2017/12/09/08/18/korean-food-3004441_1280.jpg"
+            },
+            {
+                "name": "가성비 백반집",
+                "image": "https://cdn.pixabay.com/photo/2018/10/29/15/06/korean-food-3784015_1280.jpg"
+            },
+        ],
+        "ENFP": [
+            {
+                "name": "인스타 핫플 카페",
+                "image": "https://cdn.pixabay.com/photo/2017/08/06/13/11/coffee-2595553_1280.jpg"
+            },
+            {
+                "name": "푸드트럭 서울",
+                "image": "https://cdn.pixabay.com/photo/2017/06/16/11/40/street-food-2400729_1280.jpg"
+            },
+        ],
+        # ...다른 MBTI 생략
+    },
+    "부산": {
+        "ISTJ": [
+            {
+                "name": "부산 전통 한식집",
+                "image": "https://cdn.pixabay.com/photo/2016/03/05/19/02/korean-food-1239429_1280.jpg"
+            }
+        ],
+        "ENFP": [
+            {
+                "name": "부산 해변가 카페",
+                "image": "https://cdn.pixabay.com/photo/2016/11/29/03/52/coffee-1869716_1280.jpg"
+            }
+        ],
+        # ...다른 MBTI 생략
+    },
 }
 
-# MBTI 선택
-mbti = st.selectbox("당신의 MBTI를 선택하세요:", mbti_types)
+# 사용자 입력
+selected_mbti = st.selectbox("당신의 MBTI를 선택하세요:", mbti_types)
+selected_region = st.selectbox("지역을 선택하세요:", regions)
 
 if st.button("맛집 추천받기"):
-    recommendations = mbti_restaurant.get(mbti, [])
-    if recommendations:
-        choice = random.choice(recommendations)
-        st.success(f"✨ 당신의 MBTI({mbti})에 어울리는 맛집 스타일 추천: **{choice}**")
-    else:
-        st.error("추천할 맛집 스타일이 없습니다.")
+    region_data = restaurant_data.get(selected_region, {})
+    mbti_rests = region_data.get(selected_mbti, [])
 
-st.markdown("---")
-st.caption("💡 MBTI별 성향에 맞춘 맛집 추천 예시입니다. 원하는 스타일로 자유롭게 수정해 보세요!")
+    if not mbti_rests:
